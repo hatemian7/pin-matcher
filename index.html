@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pin Generator</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="pin-generator half-width">
+                    <input class="form-control" type="text" id="generated-display">
+                    <button class="generate-btn" id="generate-btn">Generate Pin</button>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="input-section half-width">
+                    <input class="form-control" type="text" id="typed-display">
+                    <div class="numbers">
+                        <div class="calc-body">
+                            <div class="calc-button-row">
+                              <div class="button" id="seven">7</div>
+                              <div class="button" id="eight">8</div>
+                              <div class="button" id="nine">9</div>
+                            </div>
+                            <div class="calc-button-row">
+                              <div class="button" id="four">4</div>
+                              <div class="button" id="five">5</div>
+                              <div class="button" id="six">6</div>
+                            </div>
+                            <div class="calc-button-row">
+                              <div class="button" id="one">1</div>
+                              <div class="button" id="two">2</div>
+                              <div class="button" id="three">3</div>
+                            </div>
+                            <div class="calc-button-row">
+                                <div class="button" id="delete">&lt;</div>
+                                <div class="button" id="zero">0</div>
+                                <div class="button" id="clear-display">C</div>
+                            </div>
+                            <div>
+                                <button type="submit" class="submit-btn" id="submit-button">Submit</button>
+                                <p class="action-left" id="action-left"><span id="left-tries-count">3</span> try left</p>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="notify-section">
+            <p class="notify" id="fail">❌ Pin Didn't Match, Please try again</p>
+            <p class="notify" id="success">✅ Pin Matched... Secret door is opening for you</p>
+        </div>
+    </div>
+
+    <script>
+        //generate section
+        var generatedDisplay = document.getElementById('generated-display');
+        var generateButton = document.getElementById('generate-btn');
+        generatedDisplay.innerText = '';
+        generatedDisplay.value = '';
+        generateButton.addEventListener('click', function(){
+            var tempPin = Math.round(Math.random() * (9999 - 1000) + 1000);
+            generatedDisplay.innerText = tempPin;
+            generatedDisplay.value = tempPin;
+        })
+
+
+        //pin typing section
+
+        var displaying = [];
+
+        var typedDisplay = document.getElementById('typed-display');
+        function btnFunction(btnId){
+            btnId.addEventListener('click', function(){
+            // var displaying = typedDisplay.value + btnId.innerText;
+            displaying.push(btnId.innerText);
+            typedDisplay.innerText = textDisplay(displaying);
+            typedDisplay.value = textDisplay(displaying);
+            // console.log(typedDisplay.value);
+            })
+        }
+
+        function typingFunction(){
+
+            function button(id){
+                return document.getElementById(id);
+            }
+
+
+            typedDisplay.innerText = '';
+            typedDisplay.value = '';
+            
+            var one = button('one');
+            btnFunction(one);
+            var two = button('two');
+            btnFunction(two);
+            var three = button('three');
+            btnFunction(three);
+            var four = button('four');
+            btnFunction(four);
+            var five = button('five');
+            btnFunction(five);
+            var six = button('six');
+            btnFunction(six);
+            var seven = button('seven');
+            btnFunction(seven);
+            var eight = button('eight');
+            btnFunction(eight);
+            var nine = button('nine');
+            btnFunction(nine);
+            var zero = button('zero');
+            btnFunction(zero);
+            
+
+            var deleteBtn = button('delete');
+            deleteBtn.addEventListener('click', function(){
+                displaying.pop();
+                typedDisplay.innerText = textDisplay(displaying);
+                typedDisplay.value = textDisplay(displaying);
+                textDisplay(displaying);
+            })
+
+            var clear = button('clear-display');
+            clear.addEventListener('click', function(){
+                typedDisplay.innerText = [];
+                typedDisplay.value = [];
+                displaying = [];
+            })
+
+        }
+        typingFunction();
+
+        function textDisplay(name){
+            var textLength = name.length;
+            var result = name[0];
+            for(var i = 1;i<name.length;i++){
+                result = result + name[i];
+            }
+            if(name.length == 0){
+                return '';
+            }else{
+                return result;
+            }
+        }
+
+        //pin matching section
+
+        var failAlert = document.getElementById('fail');
+        var successAlert = document.getElementById('success');
+        var triesLeftMessage = document.getElementById('action-left');
+        var submitBtn = document.getElementById('submit-button');
+        submitBtn.addEventListener('click', function(){
+            var generatedPinInt = parseInt(generatedDisplay.value);
+            var typedPinInt = parseInt(typedDisplay.value);
+            if(generatedPinInt == typedPinInt){
+                successAlert.style.display = 'block';
+                triesLeftMessage.style.display = 'none';
+                failAlert.style.display = 'none';
+                window.open("https://www.facebook.com/saleheen.sakin/", "_blank");
+            }else{
+                failAlert.style.display = 'block';
+                successAlert.style.display = 'none';
+                triesLeftMessage.style.display = 'block';
+                var triesLeftCount = document.getElementById('left-tries-count').innerText;
+                triesLeftCount = parseInt(triesLeftCount);
+                triesLeftCount = triesLeftCount - 1;
+                document.getElementById('left-tries-count').innerText = triesLeftCount;
+                if(triesLeftCount<1){
+                    submitBtn.style.display = 'none';
+                }
+            }
+        })
+
+    </script>
+
+</body>
+</html>
