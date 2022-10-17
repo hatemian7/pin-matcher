@@ -155,7 +155,9 @@
         submitBtn.addEventListener('click', function(){
             var generatedPinInt = parseInt(generatedDisplay.value);
             var typedPinInt = parseInt(typedDisplay.value);
-            if(generatedPinInt == typedPinInt){
+            if(generatedDisplay.value == ''){
+                alert('Please generate a pin first');
+            }else if(generatedPinInt == typedPinInt){
                 successAlert.style.display = 'block';
                 triesLeftMessage.style.display = 'none';
                 failAlert.style.display = 'none';
